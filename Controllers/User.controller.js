@@ -1,13 +1,23 @@
 const mongoose = require('mongoose')
 const userModel = require('../Models/Users.model')
 const passport = require('passport')
+const nodemailer = require('nodemailer')
+
+let mailTransporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'kurrucharan987@gmail.com',
+        pass: '@Charan1234'
+    }
+});
+
 module.exports = {
     async register(req, res) {
         var user = new userModel();
         user.fullName = req.body.fullName;
         user.email = req.body.email;
         user.password = req.body.password;
-
+        // console.log(user)
         await userModel.findOne({ email: req.body.email })
             .then((record) => {
                 if (!record)

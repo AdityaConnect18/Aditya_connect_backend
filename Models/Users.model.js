@@ -23,16 +23,16 @@ var UserSchema = new mongoose.Schema({
     type: String,
     required: "Roll number can't be empty",
   },
-  DegreeId: {
-    type: String
+  courseId: {
+    type: mongoose.Schema.Types.ObjectId, ref: 'course'
   },
 
   CollegeId: {
-    type: String
+    type: mongoose.Schema.Types.ObjectId, ref: 'college'
   },
 
   DepartmentId: {
-    type: String
+    type: mongoose.Schema.Types.ObjectId, ref: 'department'
   },
 
   mobileNumber: {
@@ -84,4 +84,4 @@ UserSchema.methods.generateJwt = function () {
 
 UserSchema.set('autoIndex', false);
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('user', UserSchema);
