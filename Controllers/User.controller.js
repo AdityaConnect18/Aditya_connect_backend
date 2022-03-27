@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const userModel = require('../Models/Users.model')
 const passport = require('passport')
 const nodemailer = require('nodemailer')
+const roleModel = require('../Models/Role.model')
 
 let mailTransporter = nodemailer.createTransport({
     service: 'gmail',
@@ -51,13 +52,35 @@ module.exports = {
         })(req, res);
     },
 
-    async getAllfaculty(req, res) {
+    async getAllUsers(req, res) {
         try {
-            var faculty = await userModel.find({});
-            return res.status(200).json({ message: 'All faculties details', faculty });
+            var users = await userModel.find({}).select('-password').populate('courseId')
+                .populate('collegeId', '-departments')
+                .populate('roleId')
+            return res.status(200).json({ message: 'All faculties details', users });
         }
         catch (err) {
             res.status(400).json({ message: 'somethingwent wrong with retriving !', err });
         }
+    },
+
+    async addUser(req, res) {
+        var user = new userModel();
+        user = req.body;
+        console.log(user);
+        userModel.create(user)
+            .then(result => {
+                res.status(200).json({ message: 'user added successfully !', result });
+            })
+            .catch(err => { console.log(err); });
+    },
+
+    async addUserRole(req, res) {
+        var role = req.body;
+        roleModel.insertMany(role)
+            .then(result => {
+                res.status(200).json({ message: 'role added successfully !', result });
+            })
+            .catch(err => { console.log(err); });
     }
 };

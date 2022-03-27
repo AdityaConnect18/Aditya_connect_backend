@@ -27,11 +27,11 @@ var UserSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId, ref: 'course'
   },
 
-  CollegeId: {
+  collegeId: {
     type: mongoose.Schema.Types.ObjectId, ref: 'college'
   },
 
-  DepartmentId: {
+  departmentId: {
     type: mongoose.Schema.Types.ObjectId, ref: 'department'
   },
 
@@ -40,13 +40,17 @@ var UserSchema = new mongoose.Schema({
   },
 
   roleId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId, ref: 'role'
   },
 
-  UserImg: {
+  userImg: {
     type: String,
     default: "https://thumbs.dreamstime.com/b/faceless-businessman-avatar-man-suit-blue-tie-human-profile-userpic-face-features-web-picture-gentlemen-85824471.jpg"
   },
+  notificationId: {
+    type: String,
+    default: " "
+  }
 });
 
 
