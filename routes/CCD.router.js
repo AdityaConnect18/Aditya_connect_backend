@@ -10,4 +10,5 @@ router.post('/addCollege', ccdCtrl.addCollege);
 router.post('/addDepartment', ccdCtrl.addDepartment);
 router.get('/get-colleges', ccdCtrl.fetchCollges);
 router.post('/addCategory', ccdCtrl.addCategory);
+router.get('/get-courses', ccdCtrl.getCourses);
 module.exports = router;

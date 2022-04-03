@@ -52,6 +52,14 @@ module.exports = {
                 res.status(200).json({ 'message': 'Category Added Successfully', result })
             })
             .catch(err => { console.log(err) });
+    },
+
+    async getCourses(req, res) {
+        CourseModel.find({})
+            .then(result => {
+                res.status(200).json({ 'message': 'Courses fetched', result })
+            })
+            .catch(err => { console.log(err) });
     }
 
 };
