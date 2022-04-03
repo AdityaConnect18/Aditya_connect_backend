@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 var adminSchema = mongoose.Schema({
 
@@ -64,7 +66,7 @@ adminSchema.methods.verifyPassword = function (password) {
 
 adminSchema.methods.generateJwt = function () {
     return jwt.sign(
-        { _id: this._id, fullName: this.fullName, email: this.email, UserImg: this.UserImg },
+        { _id: this._id, adminName: this.adminName, email: this.email, UserImg: this.UserImg },
         process.env.JWT_SECRET,
         {
             expiresIn: process.env.JWT_EXP,

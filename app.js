@@ -7,6 +7,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const passport = require('passport');
+var cors = require('cors')
 
 var indexRouter = require('./routes/index.router');
 var usersRouter = require('./routes/Users.router');
@@ -14,6 +15,7 @@ var adminRouter = require('./routes/Admin.router');
 var ccdRouter = require('./routes/CCD.router');
 
 var app = express();
+app.use(cors())
 var server = require('http').createServer(app);
 
 // view engine setup
@@ -30,7 +32,7 @@ app.use(passport.initialize());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/ccd', ccdRouter);
-// app.use('/admin', adminRouter);
+app.use('/admin', adminRouter);
 
 
 server.listen(process.env.PORT || '3500', () => {
