@@ -57,6 +57,7 @@ module.exports = {
             var users = await userModel.find({}).select('-password').populate('courseId')
                 .populate('collegeId', '-departments')
                 .populate('roleId')
+                .populate('departmentId')
             return res.status(200).json({ message: 'All faculties details', users });
         }
         catch (err) {

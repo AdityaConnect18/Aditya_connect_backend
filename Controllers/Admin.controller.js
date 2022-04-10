@@ -26,4 +26,12 @@ module.exports = {
             .catch(err => { console.log(err); });
     },
 
+    async getAdmins(req, res) {
+        AdminModel.find({})
+            .then(data => {
+                res.status(200).json({ message: 'Volunteers fetchged successfully', data })
+            })
+            .catch(err => { console.log(err); });
+    }
+
 }

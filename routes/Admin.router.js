@@ -5,5 +5,6 @@ var router = express.Router();
 
 var adminCtrl = require('../Controllers/Admin.controller')
 router.post('/addAdmin', adminCtrl.addAdmin)
+router.get('/get-admins', adminCtrl.getAdmins)
 router.post('/login', adminCtrl.login)
 module.exports = router;
