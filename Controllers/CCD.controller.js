@@ -60,6 +60,14 @@ module.exports = {
                 res.status(200).json({ 'message': 'Courses fetched', result })
             })
             .catch(err => { console.log(err) });
+    },
+
+    async getCategory(req, res) {
+        catModel.find({})
+            .then(result => {
+                res.status(200).json({ 'message': 'Categories fetched', result })
+            })
+            .catch(err => { console.log(err) });
     }
 
 };
