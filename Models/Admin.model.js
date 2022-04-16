@@ -30,11 +30,16 @@ var adminSchema = mongoose.Schema({
     courseId: {
         type: mongoose.Schema.Types.ObjectId, ref: 'course'
     },
+
+    collegeId: { type: mongoose.Schema.Types.ObjectId, ref: 'college' },
+
     DeptId: {
         type: mongoose.Schema.Types.ObjectId, ref: 'department'
     },
 
     // ToDo create column for Admin posted posts
+
+    postId: { type: mongoose.Schema.Types.ObjectId, ref: 'post' },
 
     channelList: [
         {

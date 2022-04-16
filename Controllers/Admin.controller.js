@@ -28,6 +28,12 @@ module.exports = {
 
     async getAdmins(req, res) {
         AdminModel.find({})
+            .populate('channelList')
+            .populate('collegeId', '-departments')
+            .populate('DeptId')
+            .populate('courseId')
+            .select("-password")
+            .select("-saltSecret")
             .then(data => {
                 res.status(200).json({ message: 'Volunteers fetchged successfully', data })
             })
