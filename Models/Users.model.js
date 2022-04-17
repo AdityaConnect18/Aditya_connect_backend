@@ -50,7 +50,8 @@ var UserSchema = new mongoose.Schema({
   notificationId: {
     type: String,
     default: " "
-  }
+  },
+  createdAt: { type: Date, default: Date.now() },
 });
 
 

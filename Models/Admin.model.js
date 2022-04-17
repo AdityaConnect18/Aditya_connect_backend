@@ -45,7 +45,9 @@ var adminSchema = mongoose.Schema({
         {
             type: mongoose.Schema.Types.ObjectId, ref: 'course'
         }
-    ]
+    ],
+
+    createdAt: { type: Date, default: Date.now() },
 });
 
 adminSchema.path('email').validate((val) => {
