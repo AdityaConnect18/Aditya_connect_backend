@@ -6,6 +6,8 @@ var router = express.Router();
 var userCtrl = require('../Controllers/User.controller')
 var evCtrl = require('../Controllers/Email.Verify')
 
+router.post('/login', userCtrl.login);
+router.post('/update-details', userCtrl.updateUserData);
 router.get('/get-users', userCtrl.getAllUsers);
 
 router.post('/verifyEmail', evCtrl.verifyMail);

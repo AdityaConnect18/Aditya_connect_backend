@@ -19,7 +19,7 @@ passport.use(
                         return done(null, false, { message: 'Wrong password.' });
                     // authentication succeeded
                     else
-                        return done(null, user);
+                        return done(null, user, { message: 'Authentication succeeded' });
                 });
         })
 );

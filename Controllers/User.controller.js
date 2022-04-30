@@ -40,16 +40,43 @@ module.exports = {
     },
 
     async login(req, res) {
+        console.log(req.body);
         passport.authenticate('local', (err, user, info) => {
             // error from passport middleware
 
             if (err) return res.status(400).json(err);
             // registered user
 
-            else if (user) return res.status(200).json({ token: user.generateJwt() });
+            else if (user) return res.status(200).json({ message: info.message, token: user.generateJwt() });
             // unknown user or wrong password
-            else return res.status(404).json(info);
+            else return res.status(202).json(info);
         })(req, res);
+    },
+
+    async updateUserData(req, res) {
+        let data = req.body;
+        console.log(data);
+        userModel.updateOne({ _id: data.id },
+            {
+                $set: {
+                    rollNumber: data.uId,
+                    collegeId: data.collegeId,
+                    courseId: data.courseId,
+                    departmentId: data.deptId,
+                    mobileNumber: data.mobileNumber
+                }
+            })
+            .then(result => {
+                userModel.findOne({ _id: data.id })
+                    .then(user => {
+                        res.status(200).json({ message: 'Details updated successfully', token: user.generateJwt() });
+                    })
+                //and we need to  update the timmings array     
+            })
+            .catch(err => { res.status(400).json({ message: 'error occured in updating details' }); })
+
+
+
     },
 
     async getAllUsers(req, res) {
@@ -83,5 +110,8 @@ module.exports = {
                 res.status(200).json({ message: 'role added successfully !', result });
             })
             .catch(err => { console.log(err); });
+    },
+    async dummytest(req, res) {
+        return res.send("hello world");
     }
 };

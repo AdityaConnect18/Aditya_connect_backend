@@ -51,6 +51,7 @@ var UserSchema = new mongoose.Schema({
     type: String,
     default: " "
   },
+  isNewUser: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now() },
 });
 
@@ -79,7 +80,7 @@ UserSchema.methods.verifyPassword = function (password) {
 
 UserSchema.methods.generateJwt = function () {
   return jwt.sign(
-    { _id: this._id, fullName: this.fullName, email: this.email, UserImg: this.UserImg },
+    { _id: this._id, fullName: this.fullName, email: this.email, UserImg: this.UserImg, newUser: this.isNewUser },
     process.env.JWT_SECRET,
     {
       expiresIn: process.env.JWT_EXP,
