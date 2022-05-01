@@ -63,7 +63,8 @@ module.exports = {
                     collegeId: data.collegeId,
                     courseId: data.courseId,
                     departmentId: data.deptId,
-                    mobileNumber: data.mobileNumber
+                    mobileNumber: data.mobileNumber,
+                    isNewUser: false,
                 }
             })
             .then(result => {
@@ -111,7 +112,20 @@ module.exports = {
             })
             .catch(err => { console.log(err); });
     },
+
+    async getUserbyId(req, res) {
+        console.log(req.params);
+        userModel.find({ _id: req.params.id }).select('-password')
+            .populate('courseId')
+            .populate('collegeId', '-departments')
+            .populate('roleId')
+            .populate('departmentId')
+            .then(result => { return res.status(200).json(result) })
+            .catch(err => { return res.status(500).json(err) })
+    },
+
     async dummytest(req, res) {
         return res.send("hello world");
     }
+
 };

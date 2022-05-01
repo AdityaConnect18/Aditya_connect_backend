@@ -9,6 +9,7 @@ var evCtrl = require('../Controllers/Email.Verify')
 router.post('/login', userCtrl.login);
 router.post('/register', userCtrl.register);
 router.post('/update-details', userCtrl.updateUserData);
+router.get('/get-user/:id', userCtrl.getUserbyId)
 router.get('/get-users', userCtrl.getAllUsers);
 
 router.post('/verifyEmail', evCtrl.verifyMail);
