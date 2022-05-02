@@ -18,11 +18,12 @@ module.exports = {
         user.fullName = req.body.fullName;
         user.email = req.body.email;
         user.password = req.body.password;
+        user.createdAt = new Date();
         // console.log(user)
         await userModel.findOne({ email: req.body.email })
             .then((record) => {
-                if (!record)
-                    return res.status(200).json({ message: 'Already registered with tuis email', record });
+                if (record)
+                    return res.status(200).json({ message: 'Already registered with this email' });
                 else {
                     user.save((err, doc) => {
                         if (!err) res.status(200).send({ message: "user created successfully", doc });

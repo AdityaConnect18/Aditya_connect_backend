@@ -21,7 +21,6 @@ var UserSchema = new mongoose.Schema({
 
   rollNumber: {
     type: String,
-    required: "Roll number can't be empty",
   },
   courseId: {
     type: mongoose.Schema.Types.ObjectId, ref: 'course'
