@@ -3,6 +3,7 @@ const userModel = require('../Models/Users.model')
 const passport = require('passport')
 const nodemailer = require('nodemailer')
 const roleModel = require('../Models/Role.model')
+const postModel = require('../Models/Feed.model')
 
 let mailTransporter = nodemailer.createTransport({
     service: 'gmail',
@@ -48,7 +49,13 @@ module.exports = {
             if (err) return res.status(400).json(err);
             // registered user
 
-            else if (user) return res.status(200).json({ message: info.message, token: user.generateJwt() });
+            else if (user) return res.status(200)
+                .json(
+                    {
+                        message: info.message,
+                        token: user.generateJwt(),
+                        userRecord: user
+                    });
             // unknown user or wrong password
             else return res.status(202).json(info);
         })(req, res);
@@ -73,7 +80,6 @@ module.exports = {
                     .then(user => {
                         res.status(200).json({ message: 'Details updated successfully', token: user.generateJwt() });
                     })
-                //and we need to  update the timmings array     
             })
             .catch(err => { res.status(400).json({ message: 'error occured in updating details' }); })
 
@@ -124,4 +130,22 @@ module.exports = {
             .then(result => { return res.status(200).json(result) })
             .catch(err => { return res.status(500).json(err) })
     },
+
+    async fetchPosts(req, res) {
+        console.log(req.query)
+        let { channelId, pageNumber, limit } = req.query;
+        pageNumber = (pageNumber - 1) * limit;
+        postModel.find({})
+            .populate('postedBy', '-channelList -postsId')
+            .sort({ createdAt: -1 })
+            .limit(parseInt(limit))
+            .skip(parseInt(pageNumber))
+            .exec()
+            .then(result => {
+                setTimeout(() => {
+                    return res.status(200).send({ "message": "fetched successfuly", result })
+                }, 3000);
+            })
+            .catch(err => { console.log(err) })
+    }
 };

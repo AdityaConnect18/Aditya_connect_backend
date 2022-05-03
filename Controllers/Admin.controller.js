@@ -1,4 +1,5 @@
 const AdminModel = require('../Models/Admin.model')
+const postModel = require('../Models/Feed.model')
 module.exports = {
 
     async login(req, res) {
@@ -38,6 +39,24 @@ module.exports = {
                 res.status(200).json({ message: 'Volunteers fetchged successfully', data })
             })
             .catch(err => { console.log(err); });
+    },
+
+    async publishPost(req, res) {
+        console.log(req.body)
+        let post = new postModel();
+        post = req.body;
+        post.createdAt = new Date();
+        postModel.create(post)
+            .then(result => {
+                AdminModel.updateOne({ _id: result.postedBy },
+                    {
+                        $push: { postsId: result._id }
+                    }).then(result => {
+                        //console.log(result);
+                    }).catch(error => { console.log(error) });
+                res.status(200).json({ message: 'Post added successfully !', result });
+            })
+            .catch(err => { console.log(err); });
     }
 
-}
+};
