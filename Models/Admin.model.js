@@ -14,6 +14,7 @@ var adminSchema = mongoose.Schema({
     },
     password: {
         type: String,
+        select: false,
         required: "Password can't be empty",
         minlength: [4, 'Password must be atleast 4 character long'],
     },
@@ -39,7 +40,7 @@ var adminSchema = mongoose.Schema({
 
     // ToDo create column for Admin posted posts
 
-    postId: { type: mongoose.Schema.Types.ObjectId, ref: 'post' },
+    postsId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'post' }],
 
     channelList: [
         {
