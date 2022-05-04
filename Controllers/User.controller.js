@@ -135,7 +135,7 @@ module.exports = {
         console.log(req.query)
         let { channelId, pageNumber, limit } = req.query;
         pageNumber = (pageNumber - 1) * limit;
-        postModel.find({})
+        postModel.find({}) //channelList: { $in: [channelId] }
             .populate('postedBy', '-channelList -postsId')
             .sort({ createdAt: -1 })
             .limit(parseInt(limit))
