@@ -38,15 +38,11 @@ var adminSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, ref: 'department'
     },
 
-    // ToDo create column for Admin posted posts
+    roleId: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'role'
+    },
 
     postsId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'post' }],
-
-    channelList: [
-        {
-            type: mongoose.Schema.Types.ObjectId, ref: 'course'
-        }
-    ],
 
     createdAt: { type: Date, default: Date.now() },
 });
@@ -67,7 +63,27 @@ adminSchema.pre('save', function (next) {
     });
 });
 
+adminSchema.pre('findOneAndUpdate', function (next) {
+    console.log("inside pre middleware")
+    let update = { ...this.getUpdate() };
+    console.log(update)
+    // Only run this function if password was modified
+    if (update.password) {
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(update.password, salt, (err, hash) => {
+                update.password = hash;
+                let saltSecret = salt;
+                update.saltSecret = saltSecret;
+                this.setUpdate(update);
+                next();
+            });
+        });
+
+    }
+});
+
 // Methods
+
 adminSchema.methods.verifyPassword = function (password) {
     return bcrypt.compareSync(password, this.password);
 };

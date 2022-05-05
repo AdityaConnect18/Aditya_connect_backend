@@ -147,5 +147,14 @@ module.exports = {
                 }, 3000);
             })
             .catch(err => { console.log(err) })
+    },
+    removeUser(req, res) {
+        console.log(req.params)
+        let { id } = req.params
+        // userModel.deleteOne({ _id: id })
+        //     .then(data => {
+        //         res.status(200).json({ message: 'user removed successfully', data })
+        //     })
+        //     .catch(err => { console.log(err); });
     }
 };

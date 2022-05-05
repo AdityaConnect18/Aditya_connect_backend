@@ -18,4 +18,5 @@ router.get('/emailVerifyResponse/:jwtToken', evCtrl.verifyMailResponse)
 router.post('/addUser', userCtrl.addUser);
 router.post('/addRole', userCtrl.addUserRole);
 router.get('/fetchposts', userCtrl.fetchPosts)
+router.delete('/remove-user/:id', userCtrl.removeUser)
 module.exports = router;
