@@ -4,6 +4,7 @@ const passport = require('passport')
 const nodemailer = require('nodemailer')
 const roleModel = require('../Models/Role.model')
 const postModel = require('../Models/Feed.model')
+const messageModel = require('../Models/Message.model')
 
 let mailTransporter = nodemailer.createTransport({
     service: 'gmail',
@@ -49,13 +50,23 @@ module.exports = {
             if (err) return res.status(400).json(err);
             // registered user
 
-            else if (user) return res.status(200)
-                .json(
-                    {
-                        message: info.message,
-                        token: user.generateJwt(),
-                        userRecord: user
-                    });
+            else if (user) {
+                userModel.find({ _id: user._id }).select('-password')
+                    .populate('courseId')
+                    .populate('collegeId', '-departments')
+                    .populate('roleId')
+                    .populate('departmentId')
+                    .then(result => {
+                        return res.status(200)
+                            .json(
+                                {
+                                    message: info.message,
+                                    token: user.generateJwt(),
+                                    userRecord: result
+                                });
+                    })
+                    .catch(err => { return res.status(500).json(err) })
+            }
             // unknown user or wrong password
             else return res.status(202).json(info);
         })(req, res);
@@ -77,8 +88,12 @@ module.exports = {
             })
             .then(result => {
                 userModel.findOne({ _id: data.id })
+                    .populate('courseId')
+                    .populate('collegeId', '-departments')
+                    .populate('roleId')
+                    .populate('departmentId')
                     .then(user => {
-                        res.status(200).json({ message: 'Details updated successfully', token: user.generateJwt() });
+                        res.status(200).json({ message: 'Details updated successfully', token: user.generateJwt(), userRecord: user });
                     })
             })
             .catch(err => { res.status(400).json({ message: 'error occured in updating details' }); })
@@ -151,10 +166,26 @@ module.exports = {
     removeUser(req, res) {
         console.log(req.params)
         let { id } = req.params
-        // userModel.deleteOne({ _id: id })
-        //     .then(data => {
-        //         res.status(200).json({ message: 'user removed successfully', data })
-        //     })
-        //     .catch(err => { console.log(err); });
+        userModel.deleteOne({ _id: id })
+            .then(data => {
+                res.status(200).json({ message: 'user removed successfully', data })
+            })
+            .catch(err => { console.log(err); });
+    },
+    postMessage(req, res) {
+        oneMessage = new messageModel();
+        oneMessage = req.body
+        oneMessage.createdAt = new Date()
+        messageModel.create(oneMessage)
+            .then(data => {
+                userModel.findOneAndUpdate({ _id: oneMessage.postedBy }, {
+                    $push: { messagesList: data._id }
+                })
+                    .then(updated => {
+                        res.status(200).json({ message: 'user removed successfully', data })
+                    })
+                    .catch(err => console.log(err))
+            })
+            .catch(err => { console.log(err) });
     }
 };

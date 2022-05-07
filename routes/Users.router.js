@@ -19,4 +19,5 @@ router.post('/addUser', userCtrl.addUser);
 router.post('/addRole', userCtrl.addUserRole);
 router.get('/fetchposts', userCtrl.fetchPosts)
 router.delete('/remove-user/:id', userCtrl.removeUser)
+router.post('/post-message', userCtrl.postMessage)
 module.exports = router;
