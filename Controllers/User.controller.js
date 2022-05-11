@@ -73,32 +73,49 @@ module.exports = {
     },
 
     async updateUserData(req, res) {
+        console.log(req.body)
         let data = req.body;
         console.log(data);
-        userModel.updateOne({ _id: data.id },
-            {
-                $set: {
-                    rollNumber: data.uId,
-                    collegeId: data.collegeId,
-                    courseId: data.courseId,
-                    departmentId: data.deptId,
-                    mobileNumber: data.mobileNumber,
-                    isNewUser: false,
-                }
-            })
-            .then(result => {
-                userModel.findOne({ _id: data.id })
-                    .populate('courseId')
-                    .populate('collegeId', '-departments')
-                    .populate('roleId')
-                    .populate('departmentId')
-                    .then(user => {
-                        res.status(200).json({ message: 'Details updated successfully', token: user.generateJwt(), userRecord: user });
-                    })
-            })
+        let dbres;
+        if (req.body.fullName && req.body.email) {
+            dbres = userModel.updateOne({ _id: data.id },
+                {
+                    $set: {
+                        fullName: data.fullName,
+                        email: data.email,
+                        rollNumber: data.rollNumber,
+                        collegeId: data.collegeId,
+                        courseId: data.courseId,
+                        departmentId: data.deptId,
+                        mobileNumber: data.mobileNumber,
+                        isNewUser: false,
+                    }
+                })
+        }
+        else {
+            dbres = userModel.updateOne({ _id: data.id },
+                {
+                    $set: {
+                        rollNumber: data.uId,
+                        collegeId: data.collegeId,
+                        courseId: data.courseId,
+                        departmentId: data.deptId,
+                        mobileNumber: data.mobileNumber,
+                        isNewUser: false,
+                    }
+                })
+        }
+        dbres.then(result => {
+            userModel.findOne({ _id: data.id })
+                .populate('courseId')
+                .populate('collegeId', '-departments')
+                .populate('roleId')
+                .populate('departmentId')
+                .then(user => {
+                    res.status(200).json({ message: 'Details updated successfully', token: user.generateJwt(), userRecord: user });
+                })
+        })
             .catch(err => { res.status(400).json({ message: 'error occured in updating details' }); })
-
-
 
     },
 
