@@ -56,6 +56,7 @@ module.exports = {
                     .populate('collegeId', '-departments')
                     .populate('roleId')
                     .populate('departmentId')
+                    .populate('roleId')
                     .then(result => {
                         return res.status(200)
                             .json(
@@ -102,6 +103,7 @@ module.exports = {
                         departmentId: data.deptId,
                         mobileNumber: data.mobileNumber,
                         isNewUser: false,
+                        roleId: data.roleId
                     }
                 })
         }
@@ -111,6 +113,7 @@ module.exports = {
                 .populate('collegeId', '-departments')
                 .populate('roleId')
                 .populate('departmentId')
+                .populate('roleId')
                 .then(user => {
                     res.status(200).json({ message: 'Details updated successfully', token: user.generateJwt(), userRecord: user });
                 })
@@ -159,6 +162,8 @@ module.exports = {
             .populate('collegeId', '-departments')
             .populate('roleId')
             .populate('departmentId')
+            .populate('messagesList')
+            .populate('roleId')
             .then(result => { return res.status(200).json(result) })
             .catch(err => { return res.status(500).json(err) })
     },
