@@ -167,7 +167,6 @@ module.exports = {
             .then(result => { return res.status(200).json(result) })
             .catch(err => { return res.status(500).json(err) })
     },
-
     async fetchPosts(req, res) {
         console.log(req.query)
         let { channelId, pageNumber, limit } = req.query;
@@ -204,10 +203,19 @@ module.exports = {
                     $push: { messagesList: data._id }
                 })
                     .then(updated => {
-                        res.status(200).json({ message: 'user removed successfully', data })
+                        res.status(200).json({ message: 'post added successfully', data })
                     })
                     .catch(err => console.log(err))
             })
             .catch(err => { console.log(err) });
+    },
+    getMessages(req, res) {
+        console.log(req.params)
+        messageModel.find({ postedBy: req.params.id })
+            .sort({ createdAt: -1 })
+            .then(posts => {
+                res.status(200).json({ message: 'posts fetched successfully', posts })
+            })
+            .catch(err => console.log(err))
     }
 };
