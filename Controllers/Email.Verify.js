@@ -3,8 +3,8 @@ const nodemailer = require('nodemailer')
 let mailTransporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'kurrucharan987@gmail.com',
-        pass: '@Charan1234'
+        user: 'yashwanthkurru@gmail.com',
+        pass: '@Yash1234'
     }
 });
 
@@ -36,5 +36,32 @@ module.exports = {
         console.log(req.params);
         console.log("Got back response , User verified");
         res.send({});
+    },
+
+    async sendOtpToEmail(email, otp) {
+
+        let mailDetails = {
+            from: 'yashwanthkurru@gmail.com',
+            to: email,
+            subject: 'Password Reset Aditya Connect',
+            text: 'OTP',
+            html: `<h3>Your one time password for resetting your password</h3>
+                   <h2>${otp}</h2>`
+        };
+        return new Promise((resolve, reject) => {
+
+            mailTransporter.sendMail(mailDetails, function (err, data) {
+                if (err) {
+                    console.log('Error Occurs');
+                    resolve(false)
+                } else {
+                    console.log('Email sent successfully');
+                    resolve(true)
+                }
+            });
+
+        });
+
     }
+
 };

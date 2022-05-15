@@ -1,18 +1,22 @@
-const mongoose = require('mongoose')
 const userModel = require('../Models/Users.model')
 const passport = require('passport')
 const nodemailer = require('nodemailer')
 const roleModel = require('../Models/Role.model')
 const postModel = require('../Models/Feed.model')
 const messageModel = require('../Models/Message.model')
+const OtpModel = require('../Models/Otp.model')
+const mailer = require('./Email.Verify')
 
-let mailTransporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: 'kurrucharan987@gmail.com',
-        pass: '@Charan1234'
+const generateOTP = () => {
+    var string = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let OTP = '';
+    // Find the length of string
+    var len = string.length;
+    for (let i = 0; i < 6; i++) {
+        OTP += string[Math.floor(Math.random() * len)];
     }
-});
+    return OTP;
+}
 
 module.exports = {
     async register(req, res) {
@@ -167,6 +171,7 @@ module.exports = {
             .then(result => { return res.status(200).json(result) })
             .catch(err => { return res.status(500).json(err) })
     },
+
     async fetchPosts(req, res) {
         console.log(req.query)
         let { channelId, pageNumber, limit } = req.query;
@@ -184,6 +189,7 @@ module.exports = {
             })
             .catch(err => { console.log(err) })
     },
+
     removeUser(req, res) {
         console.log(req.params)
         let { id } = req.params
@@ -193,6 +199,7 @@ module.exports = {
             })
             .catch(err => { console.log(err); });
     },
+
     postMessage(req, res) {
         oneMessage = new messageModel();
         oneMessage = req.body
@@ -209,6 +216,7 @@ module.exports = {
             })
             .catch(err => { console.log(err) });
     },
+
     getMessages(req, res) {
         console.log(req.params)
         messageModel.find({ postedBy: req.params.id })
@@ -217,5 +225,59 @@ module.exports = {
                 res.status(200).json({ message: 'posts fetched successfully', posts })
             })
             .catch(err => console.log(err))
+    },
+
+    async sendOtp(req, res) {
+        let otp = generateOTP();
+        let otpObj = new OtpModel();
+        otpObj.userEmail = req.body.email;
+        otpObj.otp = otp;
+
+        const isEmailPresent = await userModel.findOne({ email: req.body.email })
+        if (!isEmailPresent) {
+            return res.status(200).json({ message: 'Email not found', resCode: '400' })
+        }
+
+        if (!mailer.sendOtpToEmail(req.body.email, otp)) {
+            return res.status(200).json({ message: 'Something went Wrong please try again', resCode: '400' })
+        }
+
+        OtpModel.create(otpObj)
+            .then(result => {
+                res.status(200).json({ message: 'Otp Sent Successfully', resCode: '200', OTP: result.otp })
+            })
+            .catch(err => { console.log(err); });
+    },
+
+    validateOtp(req, res) {
+        let { email, otp } = req.body
+        console.log(email, otp)
+        OtpModel.findOne({ userEmail: email, otp: otp })
+            .then(result => {
+                if (result) {
+                    res.status(200).json({ message: 'Otp validated Successfully', resCode: "200" })
+                }
+                else {
+                    res.status(200).json({ message: 'Otp validated failed', resCode: "400" })
+                }
+
+            })
+            .catch(err => { console.log(err); });
+    },
+
+    updatePassword(req, res) {
+        let { email, password } = req.body;
+        let saltSecret;
+        userModel.findOneAndUpdate({ email: email },
+            {
+                $set: {
+                    password: password,
+                    saltSecret: saltSecret
+                }
+            })
+            .then(result => {
+                res.status(200).json({ message: 'Password Updated Successfully', resCode: '200' })
+            })
+            .catch(err => { console.log(err); });
     }
 };

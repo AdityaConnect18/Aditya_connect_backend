@@ -21,4 +21,7 @@ router.get('/fetchposts', userCtrl.fetchPosts)
 router.delete('/remove-user/:id', userCtrl.removeUser)
 router.post('/post-message', userCtrl.postMessage)
 router.get('/get-messages/:id', userCtrl.getMessages)
+router.post('/send-otp', userCtrl.sendOtp)
+router.post('/validate-otp', userCtrl.validateOtp)
+router.post('/update-password', userCtrl.updatePassword)
 module.exports = router;

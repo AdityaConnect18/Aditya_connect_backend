@@ -73,6 +73,27 @@ UserSchema.pre('save', function (next) {
   });
 });
 
+UserSchema.pre('findOneAndUpdate', function (next) {
+  console.log("inside pre middleware")
+  let update = { ...this.getUpdate() };
+  console.log(update)
+  // Only run this function if password was modified
+  if (update['$set'].password) {
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(update['$set'].password, salt, (err, hash) => {
+        console.log(hash)
+        update['$set'].password = hash;
+        let saltSecret = salt;
+        update['$set'].saltSecret = saltSecret;
+        this.setUpdate(update);
+        console.log(update)
+        next();
+      });
+    });
+
+  }
+});
+
 // Methods
 UserSchema.methods.verifyPassword = function (password) {
   return bcrypt.compareSync(password, this.password);
