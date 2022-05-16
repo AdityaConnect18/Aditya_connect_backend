@@ -10,4 +10,9 @@ router.post('/login', adminCtrl.login)
 router.post('/publishpost', adminCtrl.publishPost)
 router.get('/get-roles', adminCtrl.getRoles);
 router.delete('/remove-volunteer/:id', adminCtrl.removeVolunteer);
+router.get('/get-messages', adminCtrl.getMessages)
+router.get('/get-posts', adminCtrl.getPosts)
+
+//Todo
+// post == >edit, delete
 module.exports = router;

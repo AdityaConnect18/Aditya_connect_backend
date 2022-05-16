@@ -1,6 +1,7 @@
 const AdminModel = require('../Models/Admin.model')
 const postModel = require('../Models/Feed.model')
 const roleModel = require('../Models/Role.model')
+const messagesModel = require('../Models/Message.model')
 module.exports = {
 
     async login(req, res) {
@@ -87,6 +88,22 @@ module.exports = {
             })
             .catch(err => { console.log(err); });
 
+    },
+
+    getMessages(req, res) {
+        messagesModel.find({})
+            .then(data => {
+                res.status(200).json({ message: 'Messages fetchged successfully', data })
+            })
+            .catch(err => { console.log(err); });
+    },
+
+    getPosts(req, res) {
+        postModel.find({})
+            .then(data => {
+                res.status(200).json({ message: 'Posts fetchged successfully', data })
+            })
+            .catch(err => { console.log(err); });
     }
 
 };
