@@ -12,7 +12,7 @@ module.exports = {
                 if (result == null)
                     res.status(200).json({ "message": "Admin not found Please login" });
                 else {
-                    res.status(200).json({ 'message': 'Login successfull', 'token': result.generateJwt() });
+                    res.status(200).json({ 'message': 'Login successfull', 'token': result.generateJwt(), result });
                 }
             })
             .catch(err => { console.log(err) })
