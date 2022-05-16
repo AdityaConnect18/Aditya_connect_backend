@@ -78,7 +78,7 @@ UserSchema.pre('findOneAndUpdate', function (next) {
   let update = { ...this.getUpdate() };
   console.log(update)
   // Only run this function if password was modified
-  if (update['$set'].password) {
+  if (update['$set']?.password) {
     bcrypt.genSalt(10, (err, salt) => {
       bcrypt.hash(update['$set'].password, salt, (err, hash) => {
         console.log(hash)
@@ -90,8 +90,8 @@ UserSchema.pre('findOneAndUpdate', function (next) {
         next();
       });
     });
-
   }
+  next();
 });
 
 // Methods
