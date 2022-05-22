@@ -185,7 +185,7 @@ module.exports = {
             .then(result => {
                 setTimeout(() => {
                     return res.status(200).send({ "message": "fetched successfuly", result })
-                }, 3000);
+                }, 1000);
             })
             .catch(err => { console.log(err) })
     },
