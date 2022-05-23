@@ -34,7 +34,7 @@ module.exports = {
                     user.save((err, doc) => {
                         if (!err) res.status(200).send({ message: "user created successfully", doc });
                         else {
-                            res.status(422).send({ message: 'Something went wrong !', err });
+                            res.status(200).send({ message: 'Something went wrong !', err });
                         }
                     });
                 }
