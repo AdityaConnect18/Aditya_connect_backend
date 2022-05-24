@@ -54,6 +54,20 @@ module.exports = {
             .catch(err => { console.log(err); });
     },
 
+    getAdminById(req, res) {
+        AdminModel.find({ _id: req.params.id })
+            .populate('channelList')
+            .populate('collegeId', '-departments')
+            .populate('DeptId')
+            .populate('courseId')
+            .select("-password")
+            .select("-saltSecret")
+            .then(data => {
+                res.status(200).json({ message: 'Admin fetchged successfully', data })
+            })
+            .catch(err => { console.log(err); });
+    },
+
     //Todo push notifications to users
     async publishPost(req, res) {
         let expo = new Expo();
@@ -135,6 +149,7 @@ module.exports = {
 
     getMessages(req, res) {
         messagesModel.find({})
+            .populate('postedBy')
             .then(data => {
                 res.status(200).json({ message: 'Messages fetchged successfully', data })
             })
@@ -143,6 +158,8 @@ module.exports = {
 
     getPosts(req, res) {
         postModel.find({})
+            .populate('categoryId')
+            .populate('postedBy')
             .then(data => {
                 res.status(200).json({ message: 'Posts fetchged successfully', data })
             })
