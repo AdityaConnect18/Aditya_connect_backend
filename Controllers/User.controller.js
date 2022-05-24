@@ -78,6 +78,7 @@ module.exports = {
     },
 
     async updateUserData(req, res) {
+        console.log("from updating user details")
         console.log(req.body)
         let data = req.body;
         console.log(data);
@@ -94,7 +95,6 @@ module.exports = {
                         departmentId: data.deptId,
                         mobileNumber: data.mobileNumber,
                         isNewUser: false,
-                        notificationId: data.notificationId
                     }
                 })
         }
@@ -108,7 +108,8 @@ module.exports = {
                         departmentId: data.deptId,
                         mobileNumber: data.mobileNumber,
                         isNewUser: false,
-                        roleId: data.roleId
+                        roleId: data.roleId,
+                        notificationId: data.notificationId
                     }
                 })
         }
