@@ -17,12 +17,11 @@ router.get('/emailVerifyResponse/:jwtToken', evCtrl.verifyMailResponse)
 
 router.post('/addUser', userCtrl.addUser);
 router.post('/addRole', userCtrl.addUserRole);
-router.get('/fetchposts', userCtrl.fetchPosts)
+router.get('/fetchposts', userCtrl.fetchMyCollegePosts)
 router.delete('/remove-user/:id', userCtrl.removeUser)
 router.post('/post-message', userCtrl.postMessage)
-router.get('/get-messages/:id', userCtrl.getMessages)
-router.post('/send-otp', userCtrl.sendOtp)
-router.post('/validate-otp', userCtrl.validateOtp)
+router.get('/get-messages/:id', userCtrl.getMessagesByUserId)
+router.post('/send-otp', userCtrl.sendOtpToEmail)
 router.post('/update-password', userCtrl.updatePassword)
 router.post('/get-institue-data', userCtrl.getInstitueData)
 module.exports = router;

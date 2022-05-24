@@ -128,6 +128,7 @@ module.exports = {
 
     },
 
+    // used by admin portal to fetch all users 
     async getAllUsers(req, res) {
         try {
             var users = await userModel.find({}).select('-password').populate('courseId')
@@ -174,7 +175,7 @@ module.exports = {
             .catch(err => { return res.status(500).json(err) })
     },
 
-    async fetchPosts(req, res) {
+    async fetchMyCollegePosts(req, res) {
         console.log(req.query)
         let { channelId, pageNumber, limit } = req.query;
         pageNumber = (pageNumber - 1) * limit;
@@ -219,7 +220,7 @@ module.exports = {
             .catch(err => { console.log(err) });
     },
 
-    getMessages(req, res) {
+    getMessagesByUserId(req, res) {
         console.log(req.params)
         messageModel.find({ postedBy: req.params.id })
             .sort({ createdAt: -1 })
@@ -229,7 +230,7 @@ module.exports = {
             .catch(err => console.log(err))
     },
 
-    async sendOtp(req, res) {
+    async sendOtpToEmail(req, res) {
         let otp = generateOTP();
         let otpObj = new OtpModel();
         otpObj.userEmail = req.body.email;
@@ -247,22 +248,6 @@ module.exports = {
         OtpModel.create(otpObj)
             .then(result => {
                 res.status(200).json({ message: 'Otp Sent Successfully', resCode: '200', OTP: result.otp })
-            })
-            .catch(err => { console.log(err); });
-    },
-
-    validateOtp(req, res) {
-        let { email, otp } = req.body
-        console.log(email, otp)
-        OtpModel.findOne({ userEmail: email, otp: otp })
-            .then(result => {
-                if (result) {
-                    res.status(200).json({ message: 'Otp validated Successfully', resCode: "200" })
-                }
-                else {
-                    res.status(200).json({ message: 'Otp validated failed', resCode: "400" })
-                }
-
             })
             .catch(err => { console.log(err); });
     },

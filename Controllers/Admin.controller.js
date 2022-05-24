@@ -20,7 +20,7 @@ module.exports = {
             .catch(err => { console.log(err) })
     },
 
-    async addAdmin(req, res) {
+    async upsertAdmin(req, res) {
         var admin = new AdminModel();
         admin = req.body;
         // console.log(admin);
@@ -147,7 +147,7 @@ module.exports = {
 
     },
 
-    getMessages(req, res) {
+    getAllMessages(req, res) {
         messagesModel.find({})
             .populate('postedBy')
             .then(data => {
@@ -156,7 +156,7 @@ module.exports = {
             .catch(err => { console.log(err); });
     },
 
-    getPosts(req, res) {
+    getAllPosts(req, res) {
         postModel.find({})
             .populate('categoryId')
             .populate('postedBy')
