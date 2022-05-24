@@ -94,6 +94,7 @@ module.exports = {
                         departmentId: data.deptId,
                         mobileNumber: data.mobileNumber,
                         isNewUser: false,
+                        notificationId: data.expoPushToken
                     }
                 })
         }
