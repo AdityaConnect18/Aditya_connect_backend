@@ -281,5 +281,27 @@ module.exports = {
                 res.status(200).json({ message: 'Password Updated Successfully', resCode: '200' })
             })
             .catch(err => { console.log(err); });
+    },
+
+    async getInstitueData(req, res) {
+        console.log(req.body);
+        let { collegeId, courseId, departmentId } = req.body
+        console.log(collegeId + " " + courseId + " " + departmentId)
+        try {
+            let studentsCountOfCollegeId = await userModel.find({ collegeId: collegeId }).count()
+            let studentsCountOfDeptId = await userModel.find({ departmentId: departmentId }).count()
+            let studentsCountOfCourseId = await userModel.find({ courseId: courseId }).count()
+            let totalUsers = await userModel.find({}).count()
+            return res.send({
+                studentsCountOfCollegeId: studentsCountOfCollegeId,
+                studentsCountOfDeptId: studentsCountOfDeptId,
+                studentsCountOfCourseId: studentsCountOfCourseId,
+                totalUsers: totalUsers
+            })
+        }
+        catch (error) {
+            return res.send({ message: "operation failed", error: error.message })
+        }
+
     }
 };

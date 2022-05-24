@@ -24,4 +24,5 @@ router.get('/get-messages/:id', userCtrl.getMessages)
 router.post('/send-otp', userCtrl.sendOtp)
 router.post('/validate-otp', userCtrl.validateOtp)
 router.post('/update-password', userCtrl.updatePassword)
+router.post('/get-institue-data', userCtrl.getInstitueData)
 module.exports = router;

@@ -80,7 +80,7 @@ module.exports = {
             if (postResult) {
                 //  1) update the admin who has posted
                 //  2)push notifications to users who belong to that colleges
-                AdminModel.updateOne({ _id: result.postedBy }, { $push: { postsId: result._id } })
+                AdminModel.updateOne({ _id: postResult.postedBy }, { $push: { postsId: postResult._id } })
                 let users = await userModel
                     .find({ collegeId: { $in: req.body.channelList } })
                 let userNotificationIds = users
