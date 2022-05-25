@@ -1,4 +1,4 @@
-const AdminModel = require('../Models/Admin.model')
+const adminModel = require('../Models/Admin.model')
 const postModel = require('../Models/Feed.model')
 const roleModel = require('../Models/Role.model')
 const messagesModel = require('../Models/Message.model')
@@ -8,7 +8,7 @@ module.exports = {
 
     async login(req, res) {
         console.log(req.body)
-        AdminModel.findOne({ email: req.body.userId })
+        adminModel.findOne({ email: req.body.userId })
             .then(result => {
                 console.log(result);
                 if (result == null)
@@ -21,18 +21,18 @@ module.exports = {
     },
 
     async upsertAdmin(req, res) {
-        var admin = new AdminModel();
+        var admin = new adminModel();
         admin = req.body;
         // console.log(admin);
         if (admin._id == undefined) {
-            AdminModel.create(admin)
+            adminModel.create(admin)
                 .then(result => {
                     res.status(200).json({ message: 'Admin added successfully !', result });
                 })
                 .catch(err => { console.log(err); });
         }
         else {
-            AdminModel.findOneAndUpdate({ _id: admin._id }, admin)
+            adminModel.findOneAndUpdate({ _id: admin._id }, admin)
                 .then(result => {
                     res.status(200).json({ message: 'Updated admin successfully !', result });
                 })
@@ -41,7 +41,7 @@ module.exports = {
     },
 
     async getAdmins(req, res) {
-        AdminModel.find({})
+        adminModel.find({})
             .populate('channelList')
             .populate('collegeId', '-departments')
             .populate('DeptId')
@@ -54,8 +54,8 @@ module.exports = {
             .catch(err => { console.log(err); });
     },
 
-    getAdminById(req, res) {
-        AdminModel.find({ _id: req.params.id })
+    async getAdminById(req, res) {
+        adminModel.find({ _id: req.params.id })
             .populate('channelList')
             .populate('collegeId', '-departments')
             .populate('DeptId')
@@ -80,7 +80,7 @@ module.exports = {
             if (postResult) {
                 //  1) update the admin who has posted
                 //  2)push notifications to users who belong to that colleges
-                AdminModel.updateOne({ _id: postResult.postedBy }, { $push: { postsId: postResult._id } })
+                adminModel.updateOne({ _id: postResult.postedBy }, { $push: { postsId: postResult._id } })
                 let users = await userModel
                     .find({ collegeId: { $in: req.body.channelList } })
                 let userNotificationIds = users
@@ -139,7 +139,7 @@ module.exports = {
     async removeVolunteer(req, res) {
         console.log(req.params)
         let { id } = req.params;
-        AdminModel.deleteOne({ _id: id })
+        adminModel.deleteOne({ _id: id })
             .then(data => {
                 res.status(200).json({ message: 'Volunteers removed successfully', data })
             })
@@ -147,7 +147,7 @@ module.exports = {
 
     },
 
-    getAllMessages(req, res) {
+    async getAllMessages(req, res) {
         messagesModel.find({})
             .populate('postedBy')
             .then(data => {
@@ -156,7 +156,7 @@ module.exports = {
             .catch(err => { console.log(err); });
     },
 
-    getAllPosts(req, res) {
+    async getAllPosts(req, res) {
         postModel.find({})
             .populate('categoryId')
             .populate('postedBy')
@@ -164,6 +164,19 @@ module.exports = {
                 res.status(200).json({ message: 'Posts fetchged successfully', data })
             })
             .catch(err => { console.log(err); });
+    },
+
+    //returns posts that are posted by a specific admin whose adminId is passed
+    async getPostsByAdminId(req, res) {
+        postModel.find({ postedBy: req.params.adminId })
+            .sort({ createdAt: -1 })
+            .populate('postedBy')
+            .populate('categoryId')
+            .populate('channelList')
+            .then(result => {
+                return res.status(200).json({ message: "posts fetched succesfully", posts: result })
+            })
+            .catch(err => console.error(err))
     }
 
 };

@@ -13,7 +13,6 @@ module.exports = {
             })
             .catch(err => { console.log(err) });
     },
-
     async addCollege(req, res) {
         var college = new collegeModel();
         college.collegeName = req.body.collegeName;
@@ -25,7 +24,13 @@ module.exports = {
             })
             .catch(err => { console.log(err) });
     },
-
+    async addCategory(req, res) {
+        catModel.insertMany(req.body)
+            .then(result => {
+                res.status(200).json({ 'message': 'Category Added Successfully', result })
+            })
+            .catch(err => { console.log(err) });
+    },
     async addDepartment(req, res) {
         var dept = new DepartmentModel();
         dept.deptName = req.body.courseName;
@@ -45,15 +50,6 @@ module.exports = {
             })
             .catch(err => { console.log(err) });
     },
-
-    async addCategory(req, res) {
-        catModel.insertMany(req.body)
-            .then(result => {
-                res.status(200).json({ 'message': 'Category Added Successfully', result })
-            })
-            .catch(err => { console.log(err) });
-    },
-
     async getCourses(req, res) {
         CourseModel.find({})
             .then(result => {
@@ -61,7 +57,6 @@ module.exports = {
             })
             .catch(err => { console.log(err) });
     },
-
     async getCategory(req, res) {
         catModel.find({})
             .then(result => {

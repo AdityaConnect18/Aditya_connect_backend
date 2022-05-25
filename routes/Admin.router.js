@@ -12,7 +12,8 @@ router.get('/get-roles', adminCtrl.getRoles);
 router.delete('/remove-volunteer/:id', adminCtrl.removeVolunteer);
 router.get('/get-messages', adminCtrl.getAllMessages)
 router.get('/get-posts', adminCtrl.getAllPosts)
-router.get('get-admin/:id', adminCtrl.getAdminById)
+router.get('/get-admin/:id', adminCtrl.getAdminById)
+router.get('/get-admin-posts/:adminId', adminCtrl.getPostsByAdminId)
 //Todo
-// post == >edit, delete
+// post ==> edit, delete
 module.exports = router;

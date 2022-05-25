@@ -1,6 +1,5 @@
 const userModel = require('../Models/Users.model')
 const passport = require('passport')
-const nodemailer = require('nodemailer')
 const roleModel = require('../Models/Role.model')
 const postModel = require('../Models/Feed.model')
 const messageModel = require('../Models/Message.model')
@@ -193,7 +192,7 @@ module.exports = {
             .catch(err => { console.log(err) })
     },
 
-    removeUser(req, res) {
+    async removeUser(req, res) {
         console.log(req.params)
         let { id } = req.params
         userModel.deleteOne({ _id: id })
@@ -203,7 +202,7 @@ module.exports = {
             .catch(err => { console.log(err); });
     },
 
-    postMessage(req, res) {
+    async postMessage(req, res) {
         oneMessage = new messageModel();
         oneMessage = req.body
         oneMessage.createdAt = new Date()
@@ -220,7 +219,7 @@ module.exports = {
             .catch(err => { console.log(err) });
     },
 
-    getMessagesByUserId(req, res) {
+    async getMessagesByUserId(req, res) {
         console.log(req.params)
         messageModel.find({ postedBy: req.params.id })
             .sort({ createdAt: -1 })
@@ -252,7 +251,7 @@ module.exports = {
             .catch(err => { console.log(err); });
     },
 
-    updatePassword(req, res) {
+    async updatePassword(req, res) {
         let { email, password } = req.body;
         let saltSecret;
         userModel.findOneAndUpdate({ email: email },
