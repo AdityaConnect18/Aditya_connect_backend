@@ -207,6 +207,27 @@ module.exports = {
                 return res.status(200).json({ message: "posts fetched succesfully", posts: result })
             })
             .catch(err => console.error(err))
+    },
+
+    //updating the post
+    async updatePost(req, res) {
+        let post = new postModel()
+        post = req.body
+        postModel.findOneAndUpdate({ _id: post.id }, post)
+            .then(result => {
+                res.status(200).json({ message: 'Updated post successfully !', result });
+            })
+            .catch(err => { console.log(err); });
+    },
+
+    // deleting the post 
+    async deletePost(req, res) {
+        var { postId } = req.params
+        postModel.deleteOne({ _id: postId })
+            .then(data => {
+                res.status(200).json({ message: 'posts removed successfully', data })
+            })
+            .catch(err => { console.log(err); });
     }
 
 };
