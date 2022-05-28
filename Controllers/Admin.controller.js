@@ -4,6 +4,10 @@ const roleModel = require('../Models/Role.model')
 const messagesModel = require('../Models/Message.model')
 const userModel = require('../Models/Users.model')
 const { Expo } = require('expo-server-sdk')
+const { uploadFile } = require('./S3')
+const fs = require('fs')
+const util = require('util')
+const unlinkFile = util.promisify(fs.unlink)
 module.exports = {
 
     async login(req, res) {
@@ -70,13 +74,35 @@ module.exports = {
 
     //Todo push notifications to users
     async publishPost(req, res) {
-        let expo = new Expo();
-        console.log(req.body)
+        let expo = new Expo()
+        console.log(req.file)
+        let mediaFile = req.file
+        // console.log("here is the req body", req.body)
+        // console.log(typeof req.body.channelList)
+        let channelList;
+        try {
+            console.log(req.body)
+            channelList = req.body.channelList.split(',')
+            // console.log(channelList)
+        } catch (error) {
+            console.log(error.message)
+        }
+        // 1) Send the image to aws s3 and get the public link
+        const result = await uploadFile(mediaFile)
+        await unlinkFile(mediaFile.path)
+        console.log(result);
+
+
+        // creating post body
         let post = new postModel();
         post = req.body;
-        post.createdAt = new Date();
+        post.mediaId = result.Location
+        post.createdAt = new Date()
+        post.channelList = channelList
+        // console.log(post);
         try {
             let postResult = await postModel.create(post)
+            console.log(postResult)
             if (postResult) {
                 //  1) update the admin who has posted
                 //  2)push notifications to users who belong to that colleges
@@ -120,10 +146,12 @@ module.exports = {
                         }
                     }
                 })();
+                return res.send(postResult)
 
             }
         } catch (error) {
             console.log(error.message)
+            res.send(error.message)
         }
 
     },
@@ -149,6 +177,7 @@ module.exports = {
 
     async getAllMessages(req, res) {
         messagesModel.find({})
+            .sort({ createdAt: -1 })
             .populate('postedBy')
             .then(data => {
                 res.status(200).json({ message: 'Messages fetchged successfully', data })
@@ -158,6 +187,7 @@ module.exports = {
 
     async getAllPosts(req, res) {
         postModel.find({})
+            .sort({ createdAt: -1 })
             .populate('categoryId')
             .populate('postedBy')
             .then(data => {
