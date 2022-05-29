@@ -109,8 +109,9 @@ module.exports = {
                 adminModel.updateOne({ _id: postResult.postedBy }, { $push: { postsId: postResult._id } })
                 let users = await userModel
                     .find({ collegeId: { $in: req.body.channelList } })
+                console.log(users)
                 let userNotificationIds = users
-                    .filter(eachUser => eachUser.notificationId.length > 1)
+                    .filter(eachUser => eachUser.notificationId?.length > 1)
                     .map(eachUser => eachUser.notificationId)
                 console.log(userNotificationIds)
 
@@ -139,7 +140,7 @@ module.exports = {
                     for (let chunk of chunks) {
                         try {
                             let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-                            console.log(ticketChunk);
+                            console.log("displaying ticket chunk", ticketChunk);
                             tickets.push(...ticketChunk);
                         } catch (error) {
                             console.error(error);
