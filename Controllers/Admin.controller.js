@@ -10,24 +10,27 @@ const util = require('util')
 const unlinkFile = util.promisify(fs.unlink)
 module.exports = {
 
+    // for admin login
     async login(req, res) {
         console.log(req.body)
         adminModel.findOne({ email: req.body.userId })
             .then(result => {
                 console.log(result);
-                if (result == null)
-                    res.status(200).json({ "message": "Admin not found Please login" });
+                if (result && result.verifyPassword(req.body.password)) {
+                    res.status(200).json({ 'message': 'Login successfull', 'token': result.generateJwt(), result })
+                }
                 else {
-                    res.status(200).json({ 'message': 'Login successfull', 'token': result.generateJwt(), result });
+                    res.status(200).json({ 'message': 'Invalid credentials' })
                 }
             })
             .catch(err => { console.log(err) })
     },
 
+    // for creating and updating admin record
     async upsertAdmin(req, res) {
         var admin = new adminModel();
         admin = req.body;
-        // console.log(admin);
+        // for creating new admin record
         if (admin._id == undefined) {
             adminModel.create(admin)
                 .then(result => {
@@ -35,6 +38,7 @@ module.exports = {
                 })
                 .catch(err => { console.log(err); });
         }
+        // for updating the admin record
         else {
             adminModel.findOneAndUpdate({ _id: admin._id }, admin)
                 .then(result => {
@@ -44,6 +48,7 @@ module.exports = {
         }
     },
 
+    //fetching all admins
     async getAdmins(req, res) {
         adminModel.find({})
             .populate('channelList')
@@ -58,6 +63,7 @@ module.exports = {
             .catch(err => { console.log(err); });
     },
 
+    //fetching admin by Id
     async getAdminById(req, res) {
         adminModel.find({ _id: req.params.id })
             .populate('channelList')
@@ -157,6 +163,7 @@ module.exports = {
 
     },
 
+    // fetching all roles 
     async getRoles(req, res) {
         roleModel.find({})
             .then(data => {
@@ -165,6 +172,7 @@ module.exports = {
             .catch(err => { console.log(err); });
     },
 
+    //removinig a volunteer from database
     async removeVolunteer(req, res) {
         console.log(req.params)
         let { id } = req.params;
@@ -176,6 +184,7 @@ module.exports = {
 
     },
 
+    // fetching all  messages posted by users from app
     async getAllMessages(req, res) {
         messagesModel.find({})
             .sort({ createdAt: -1 })
@@ -186,6 +195,7 @@ module.exports = {
             .catch(err => { console.log(err); });
     },
 
+    //fetching all posts
     async getAllPosts(req, res) {
         postModel.find({})
             .sort({ createdAt: -1 })

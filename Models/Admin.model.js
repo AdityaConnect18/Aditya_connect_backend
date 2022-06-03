@@ -12,9 +12,11 @@ var adminSchema = mongoose.Schema({
         required: "Email can't be empty",
         unique: true,
     },
+    designation: {
+        type: String
+    },
     password: {
         type: String,
-        select: false,
         required: "Password can't be empty",
         minlength: [4, 'Password must be atleast 4 character long'],
     },

@@ -9,6 +9,7 @@ var postSchema = new mongoose.Schema({
     postedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'admin' },
     createdAt: { type: Date, default: Date.now() },
     mediaId: { type: String, default: '' },
+    likes: { type: Number, default: 0 }
 });
 
 postSchema.set('autoIndex', false);
