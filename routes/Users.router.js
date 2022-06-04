@@ -24,4 +24,5 @@ router.get('/get-messages/:id', userCtrl.getMessagesByUserId)
 router.post('/send-otp', userCtrl.sendOtpToEmail)
 router.post('/update-password', userCtrl.updatePassword)
 router.post('/get-institue-data', userCtrl.getInstitueData)
+router.post('/like-or-dislike-post', userCtrl.likeOrDislikePost)
 module.exports = router;

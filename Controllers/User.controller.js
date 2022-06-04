@@ -28,7 +28,7 @@ module.exports = {
         await userModel.findOne({ email: req.body.email })
             .then((record) => {
                 if (record)
-                    return res.status(200).json({ message: 'Already registered with tuis email', record });
+                    return res.status(200).json({ message: 'Already registered with this email', record });
                 else {
                     user.save((err, doc) => {
                         if (!err) res.status(200).send({ message: "user created successfully", doc });
@@ -185,9 +185,7 @@ module.exports = {
             .skip(parseInt(pageNumber))
             .exec()
             .then(result => {
-                setTimeout(() => {
-                    return res.status(200).send({ "message": "fetched successfuly", result })
-                }, 1000);
+                return res.status(200).send({ "message": "fetched successfuly", result })
             })
             .catch(err => { console.log(err) })
     },
@@ -287,5 +285,47 @@ module.exports = {
             return res.send({ message: "operation failed", error: error.message })
         }
 
+    },
+
+    // used to like and unlike the post
+    async likeOrDislikePost(req, res) {
+        // console.log(req.body)
+        let { postId, userId, action } = req.body
+        if (action == 1) {
+            // like the post
+            postModel.findOneAndUpdate({ _id: postId }, {
+                $push: {
+                    likedUsersList: userId
+                }
+            })
+                .then(data => {
+                    userModel.findOneAndUpdate({ _id: userId }, {
+                        $push: { likedPostsList: postId }
+                    })
+                        .then(dbres => {
+                            return res.status(200).send({ message: "Liked the post" })
+                        })
+                        .catch(err => { console.log(err) })
+                })
+                .catch(err => { console.log(err) })
+        }
+        else {
+            //dislike the post
+            postModel.findOneAndUpdate({ _id: postId }, {
+                $pull: {
+                    likedUsersList: userId
+                }
+            })
+                .then(data => {
+                    userModel.findOneAndUpdate({ _id: userId }, {
+                        $pull: { likedPostsList: postId }
+                    })
+                        .then(dbres => {
+                            return res.status(200).send({ message: "DisLiked the post" })
+                        })
+                        .catch(err => { console.log(err) })
+                })
+                .catch(err => { console.log(err) })
+        }
     }
 };

@@ -52,7 +52,8 @@ var UserSchema = new mongoose.Schema({
   },
   isNewUser: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now() },
-  messagesList: [{ type: mongoose.Schema.Types.ObjectId, ref: 'message' }]
+  messagesList: [{ type: mongoose.Schema.Types.ObjectId, ref: 'message' }],
+  likedPostsList: [{ type: mongoose.Schema.Types.ObjectId, ref: 'post' }]
 });
 
 
