@@ -134,6 +134,7 @@ module.exports = {
                 .populate('collegeId', '-departments')
                 .populate('roleId')
                 .populate('departmentId')
+                .sort({ createdAt: -1 })
             return res.status(200).json({ message: 'All faculties details', users });
         }
         catch (err) {
@@ -177,8 +178,9 @@ module.exports = {
     async fetchMyCollegePosts(req, res) {
         console.log(req.query)
         let { channelId, pageNumber, limit } = req.query;
+        console.log(channelId)
         pageNumber = (pageNumber - 1) * limit;
-        postModel.find({}) //channelList: { $in: [channelId] }
+        postModel.find({ channelList: { $in: [channelId] } })
             .populate('postedBy', '-channelList -postsId')
             .sort({ createdAt: -1 })
             .limit(parseInt(limit))

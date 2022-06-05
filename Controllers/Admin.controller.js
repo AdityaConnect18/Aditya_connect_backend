@@ -57,6 +57,7 @@ module.exports = {
             .populate('courseId')
             .select("-password")
             .select("-saltSecret")
+            .sort({ createdAt: -1 })
             .then(data => {
                 res.status(200).json({ message: 'Volunteers fetchged successfully', data })
             })
@@ -78,7 +79,6 @@ module.exports = {
             .catch(err => { console.log(err); });
     },
 
-    //Todo push notifications to users
     async publishPost(req, res) {
         let expo = new Expo()
         console.log(req.file)
