@@ -35,17 +35,28 @@ module.exports = {
         console.log("Got back response , User verified");
         res.send({});
     },
-    async sendOtpToEmail(email, otp) {
-        let mailDetails = {
-            from: 'yashwanthkurru@gmail.com',
+    async sendOtpToEmail2(email, otp) {
+        const mailOptions = {
+            from: `"pravinmaroju217@gmail.com"`,
             to: email,
             subject: 'Password Reset Aditya Connect',
             text: 'OTP',
             html: `<h3>Your one time password for resetting your password</h3>
                    <h2>${otp}</h2>`
         };
+
+        const transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false,
+            auth: {
+                user: "pravinmaroju217@gmail.com",
+                pass: "lscpeustwybteumb"
+            }
+        });
+
         return new Promise((resolve, reject) => {
-            mailTransporter.sendMail(mailDetails, function (err, data) {
+            transporter.sendMail(mailOptions, function (err, data) {
                 if (err) {
                     console.log('Error Occurs');
                     resolve(false)

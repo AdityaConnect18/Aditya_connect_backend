@@ -228,25 +228,20 @@ module.exports = {
     },
 
     async sendOtpToEmail(req, res) {
+        console.log(req.body)
         let otp = generateOTP();
-        let otpObj = new OtpModel();
-        otpObj.userEmail = req.body.email;
-        otpObj.otp = otp;
 
-        const isEmailPresent = await userModel.findOne({ email: req.body.email })
+        let isEmailPresent = await userModel.findOne({ email: req.body.email })
         if (!isEmailPresent) {
+            console.log(isEmailPresent)
             return res.status(200).json({ message: 'Email not found', resCode: '400' })
         }
 
-        if (!mailer.sendOtpToEmail(req.body.email, otp)) {
+        if (!mailer.sendOtpToEmail2(req.body.email, otp)) {
             return res.status(200).json({ message: 'Something went Wrong please try again', resCode: '400' })
         }
 
-        OtpModel.create(otpObj)
-            .then(result => {
-                res.status(200).json({ message: 'Otp Sent Successfully', resCode: '200', OTP: result.otp })
-            })
-            .catch(err => { console.log(err); });
+        return res.status(200).json({ message: 'Otp Sent Successfully', resCode: '200', OTP: otp })
     },
 
     async updatePassword(req, res) {
