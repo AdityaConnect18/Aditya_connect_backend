@@ -33,6 +33,6 @@ router.get('/get-admin/:id', adminCtrl.getAdminById)
 router.get('/get-admin-posts/:adminId', adminCtrl.getPostsByAdminId)
 //Todo
 // post ==> edit, delete
-router.put('/update-post', adminCtrl.updatePost)
+router.post('/update-post', upload.single('selectedFile'), adminCtrl.updatePost)
 router.delete('/delete-post/:postId', adminCtrl.deletePost)
 module.exports = router;

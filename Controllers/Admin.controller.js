@@ -81,10 +81,8 @@ module.exports = {
 
     async publishPost(req, res) {
         let expo = new Expo()
-        console.log(req.file)
         let mediaFile = req.file
-        // console.log("here is the req body", req.body)
-        // console.log(typeof req.body.channelList)
+
         let channelList;
         try {
             console.log(req.body)
@@ -114,7 +112,7 @@ module.exports = {
                 //  2)push notifications to users who belong to that colleges
                 adminModel.updateOne({ _id: postResult.postedBy }, { $push: { postsId: postResult._id } })
                 let users = await userModel
-                    .find({ collegeId: { $in: req.body.channelList } })
+                    .find({ collegeId: { $in: post.channelList } })
                 console.log(users)
                 let userNotificationIds = users
                     .filter(eachUser => eachUser.notificationId?.length > 1)
@@ -222,13 +220,69 @@ module.exports = {
 
     //updating the post
     async updatePost(req, res) {
+        let expo = new Expo()
         let post = new postModel()
         post = req.body
-        postModel.findOneAndUpdate({ _id: post.id }, post)
-            .then(result => {
-                res.status(200).json({ message: 'Updated post successfully !', result });
-            })
-            .catch(err => { console.log(err); });
+        post.channelList = req.body.channelList.split(',')
+        post.createdAt = new Date()
+
+        if (req.file) {
+            const result = await uploadFile(req.file)
+            await unlinkFile(req.file.path)
+            post.mediaId = result.Location
+        }
+        try {
+            let updateRes = await postModel.updateOne({ _id: post.id }, post)
+            if (updateRes.nModified == 1) {
+
+                let users = await userModel
+                    .find({ collegeId: { $in: post.channelList } })
+                console.log(users)
+                let userNotificationIds = users
+                    .filter(eachUser => eachUser.notificationId?.length > 1)
+                    .map(eachUser => eachUser.notificationId)
+                console.log(userNotificationIds)
+
+                // 2.1) validating notificationId and creating message
+                let messages = []
+                for (let pushToken of userNotificationIds) {
+
+                    if (!Expo.isExpoPushToken(pushToken)) {
+                        console.error(`Push token ${pushToken} is not a valid Expo push token`);
+                        continue;
+                    }
+                    //Construct a message (see https://docs.expo.io/push-notifications/sending-notifications/)
+                    messages.push({
+                        to: pushToken,
+                        sound: 'default',
+                        body: post.postTitle,
+                        data: post,
+                    })
+                }
+
+                //2.3) Sending notiofications in chunks
+
+                let chunks = expo.chunkPushNotifications(messages);
+                let tickets = [];
+                (async () => {
+                    for (let chunk of chunks) {
+                        try {
+                            let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+                            console.log("displaying ticket chunk", ticketChunk);
+                            tickets.push(...ticketChunk);
+                        } catch (error) {
+                            console.error(error);
+                        }
+                    }
+                })();
+                return res.send({ message: "post updated", updateRes })
+
+            }
+        }
+        catch (err) {
+            console.log(err)
+        }
+
     },
 
     // deleting the post 
@@ -242,3 +296,4 @@ module.exports = {
     }
 
 };
+
