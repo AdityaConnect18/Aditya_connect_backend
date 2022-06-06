@@ -24,8 +24,8 @@ module.exports = {
             port: 587,
             secure: false,
             auth: {
-                user: "pravinmaroju217@gmail.com",
-                pass: "lscpeustwybteumb"
+                user: "adityaconnect18@gmail.com",
+                pass: "qcgagehxxwolpqbk"
             }
         });
 
