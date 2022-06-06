@@ -18,6 +18,7 @@ const generateOTP = () => {
 }
 
 module.exports = {
+    // used to register user
     async register(req, res) {
         var user = new userModel();
         user.fullName = req.body.fullName;
@@ -45,6 +46,7 @@ module.exports = {
 
     },
 
+    // user login
     async login(req, res) {
         console.log(req.body);
         passport.authenticate('local', (err, user, info) => {
@@ -76,6 +78,7 @@ module.exports = {
         })(req, res);
     },
 
+    // updating the password
     async updateUserData(req, res) {
         console.log("from updating user details")
         console.log(req.body)
@@ -142,6 +145,7 @@ module.exports = {
         }
     },
 
+    // adding a single user
     async addUser(req, res) {
         var user = new userModel();
         user = req.body;
@@ -153,6 +157,7 @@ module.exports = {
             .catch(err => { console.log(err); });
     },
 
+    // adding a user Role
     async addUserRole(req, res) {
         var role = req.body;
         roleModel.insertMany(role)
@@ -162,6 +167,7 @@ module.exports = {
             .catch(err => { console.log(err); });
     },
 
+    // fetching a user by id
     async getUserbyId(req, res) {
         console.log(req.params);
         userModel.find({ _id: req.params.id }).select('-password')

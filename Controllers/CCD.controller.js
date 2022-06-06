@@ -4,6 +4,7 @@ const CourseModel = require('../Models/Course.model');
 const DepartmentModel = require('../Models/Department.model');
 const catModel = require('../Models/PostCategory.model')
 module.exports = {
+    // adding a course
     async addCourse(req, res) {
         var course = new CourseModel();
         course.courseName = req.body.courseName;
@@ -13,6 +14,7 @@ module.exports = {
             })
             .catch(err => { console.log(err) });
     },
+    // adding a college
     async addCollege(req, res) {
         var college = new collegeModel();
         college.collegeName = req.body.collegeName;
@@ -24,6 +26,7 @@ module.exports = {
             })
             .catch(err => { console.log(err) });
     },
+    // adding a category
     async addCategory(req, res) {
         catModel.insertMany(req.body)
             .then(result => {
@@ -31,6 +34,7 @@ module.exports = {
             })
             .catch(err => { console.log(err) });
     },
+    // adding a departments
     async addDepartment(req, res) {
         var dept = new DepartmentModel();
         dept.deptName = req.body.courseName;
@@ -41,6 +45,7 @@ module.exports = {
             .catch(err => { console.log(err) });
 
     },
+    // fetchinh all colleges
     async fetchCollges(req, res) {
         collegeModel.find()
             .populate("courseId")
@@ -50,6 +55,7 @@ module.exports = {
             })
             .catch(err => { console.log(err) });
     },
+    // fetchinh all courses
     async getCourses(req, res) {
         CourseModel.find({})
             .then(result => {
@@ -57,6 +63,7 @@ module.exports = {
             })
             .catch(err => { console.log(err) });
     },
+    // fetchinh all categories
     async getCategory(req, res) {
         catModel.find({})
             .then(result => {
