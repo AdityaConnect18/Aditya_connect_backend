@@ -55,6 +55,7 @@ module.exports = {
             .populate('collegeId', '-departments')
             .populate('DeptId')
             .populate('courseId')
+            .populate('roleId')
             .select("-password")
             .select("-saltSecret")
             .sort({ createdAt: -1 })
@@ -92,15 +93,17 @@ module.exports = {
             console.log(error.message)
         }
         // 1) Send the image to aws s3 and get the public link
-        const result = await uploadFile(mediaFile)
-        await unlinkFile(mediaFile.path)
-        console.log(result);
-
+        let result
+        if (mediaFile) {
+            result = await uploadFile(mediaFile)
+            await unlinkFile(mediaFile.path)
+            console.log(result);
+        }
 
         // creating post body
         let post = new postModel();
         post = req.body;
-        post.mediaId = result.Location
+        post.mediaId = result?.Location
         post.createdAt = new Date()
         post.channelList = channelList
         // console.log(post);
